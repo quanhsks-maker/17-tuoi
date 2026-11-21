@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tuổi 17</title>
+  <link rel="stylesheet" href="./src/styles/main.css" />
+  <link rel="stylesheet" href="./src/styles/auth.css" />
+  <link rel="stylesheet" href="./src/styles/choice.css" />
+  <link rel="stylesheet" href="./src/styles/hud.css" />
+</head>
+<body>
+  <div id="app-container">
+    <!-- MÀN HÌNH 1: ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <section id="auth-screen" class="screen active">
+      <div class="auth-card">
+        <div class="game-badge">MÔ PHỎNG CUỘC SỐNG</div>
+        <h1 class="game-title">TUỔI 17</h1>
+        <p class="game-subtitle">Đi học tiếp hay ra đời đi làm — mọi quyết định đều có giá của nó.</p>
+
+        <div class="auth-tabs">
+          <button id="tab-login" class="tab-btn active" type="button">Đăng nhập</button>
+          <button id="tab-register" class="tab-btn" type="button">Tạo tài khoản</button>
+        </div>
+
+        <form id="login-form" class="auth-form active">
+          <div class="input-group">
+            <label>Tên tài khoản</label>
+            <input type="text" id="login-username" placeholder="Nhập tên tài khoản" required />
+          </div>
+          <div class="input-group">
+            <label>Mật khẩu</label>
+            <input type="password" id="login-password" placeholder="Nhập mật khẩu" required />
+          </div>
+          <p id="login-error" class="error-msg"></p>
+          <button type="submit" class="btn-primary">Vào game</button>
+        </form>
+
+        <form id="register-form" class="auth-form">
+          <div class="input-group">
+            <label>Tên tài khoản (viết liền không dấu)</label>
+            <input type="text" id="reg-username" placeholder="Ví dụ: nam17t" required />
+          </div>
+          <div class="input-group">
+            <label>Gmail</label>
+            <input type="email" id="reg-email" placeholder="tenban@gmail.com" required />
+          </div>
+          <div class="input-group">
+            <label>Mật khẩu (tối thiểu 6 ký tự)</label>
+            <input type="password" id="reg-password" placeholder="Nhập mật khẩu" required />
+          </div>
+          <p id="reg-error" class="error-msg"></p>
+          <button type="submit" class="btn-primary">Tạo tài khoản</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- MÀN HÌNH 2: CHỌN HƯỚNG ĐI -->
+    <section id="choice-screen" class="screen">
+      <div class="choice-wrapper">
+        <div id="choice-step-main">
+          <div class="choice-header">
+            <h2>CHỌN HƯỚNG ĐI NĂM 17 TUỔI</h2>
+            <p>Trong túi đang có <b>500.000đ</b>, cuối tháng phải đóng <b>1.500.000đ</b> tiền trọ và ăn uống.</p>
+          </div>
+          <div class="path-grid">
+            <div id="btn-choose-study" class="path-card study">
+              <div class="path-icon">🎓</div>
+              <div class="path-title">Học Đại học</div>
+              <div class="path-desc">Chọn ngành học, vừa đi làm thêm trang trải vừa tích lũy đủ học lực và học phí để tốt nghiệp.</div>
+            </div>
+            <div id="btn-choose-work" class="path-card work">
+              <div class="path-icon">💼</div>
+              <div class="path-title">Đi làm luôn</div>
+              <div class="path-desc">Nhận việc ngẫu nhiên kiếm tiền ngay. Sau này đủ tiền và kiến thức vẫn có thể ôn thi lại Đại học.</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="choice-step-study" class="hidden">
+          <div class="choice-header">
+            <h2>CHỌN NGÀNH HỌC</h2>
+            <p>Mỗi ngành có mức học phí và thu nhập sau tốt nghiệp khác nhau:</p>
+          </div>
+          <div id="major-list" class="major-list"></div>
+          <button id="btn-back-choice" class="btn-secondary" type="button" style="width:100%;">← Quay lại</button>
+        </div>
+
+        <div id="choice-step-work" class="hidden">
+          <div class="choice-header">
+            <h2>CÔNG VIỆC ĐẦU TIÊN</h2>
+          </div>
+          <div class="roulette-box">
+            <div id="roulette-icon" class="roulette-icon">💼</div>
+            <div id="roulette-name" class="roulette-name">Đang tìm việc...</div>
+            <div id="roulette-quote" class="roulette-quote"></div>
+            <div id="roulette-stats" class="roulette-stats"></div>
+            <button id="btn-confirm-work" class="btn-primary hidden" type="button">Bắt đầu</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÀN HÌNH 3: BẢN ĐỒ THÀNH PHỐ -->
+    <section id="world-screen" class="screen">
+      <canvas id="game-canvas"></canvas>
+
+      <div class="hud-top">
+        <div class="hud-header-bar">
+          <div class="hud-identity">
+            <div id="hud-player-info" class="hud-name">Đang tải...</div>
+            <div id="hud-money" class="hud-money">0đ</div>
+          </div>
+          <div class="hud-top-actions">
+            <button id="btn-toggle-sound" class="btn-mini-sound" type="button" title="Tắt/Bật âm thanh">🔊</button>
+            <button id="btn-open-menu" class="btn-mini-finance" type="button">Menu</button>
+            <button id="btn-logout" class="btn-mini-logout" type="button">Thoát</button>
+          </div>
+        </div>
+
+        <div class="hud-bars">
+          <div class="stat-box">
+            <div class="stat-head">
+              <span>Thể lực</span>
+              <span id="hud-energy">100/100</span>
+            </div>
+            <div class="stat-track">
+              <div id="bar-energy" class="stat-fill fill-energy" style="width:100%"></div>
+            </div>
+          </div>
+
+          <div class="stat-box">
+            <div class="stat-head">
+              <span>Tinh thần</span>
+              <span id="hud-happy">80/100</span>
+            </div>
+            <div class="stat-track">
+              <div id="bar-happy" class="stat-fill fill-happy" style="width:80%"></div>
+            </div>
+          </div>
+
+          <div class="stat-box">
+            <div class="stat-head">
+              <span>Học lực</span>
+              <span id="hud-know">10/100</span>
+            </div>
+            <div class="stat-track">
+              <div id="bar-know" class="stat-fill fill-know" style="width:10%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="hud-goal" class="hud-goal">Gợi ý: Di chuyển tới gần địa điểm để tương tác.</div>
+      </div>
+
+      <div id="hud-toast" class="hud-toast"></div>
+
+      <div class="hud-bottom">
+        <div id="joystick-zone" class="joystick-zone">
+          <div id="joystick-knob" class="joystick-knob"></div>
+        </div>
+        <button id="btn-interact" class="btn-interact" type="button" disabled>Lại gần địa điểm</button>
+      </div>
+
+      <!-- POPUP TÌNH HUỐNG -->
+      <div id="event-modal" class="event-modal hidden">
+        <div class="event-card">
+          <h3 id="event-title">Tình huống</h3>
+          <p id="event-desc"></p>
+          <div class="event-actions">
+            <button id="event-btn-1" class="btn-event-safe" type="button"></button>
+            <button id="event-btn-2" class="btn-event-risk" type="button"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- POPUP PHÒNG THI ĐẠI HỌC -->
+      <div id="exam-modal" class="event-modal hidden">
+        <div class="event-card exam-card">
+          <div class="exam-top">
+            <span id="exam-progress" class="exam-badge">Câu 1/5</span>
+            <span id="exam-bonus" class="exam-bonus">Điểm cộng: +0</span>
+          </div>
+          <h3 id="exam-question">Đang tải đề thi...</h3>
+          <div id="exam-options" class="exam-options"></div>
+        </div>
+      </div>
+
+      <!-- POPUP TÀI SẢN & CHỖ Ở -->
+      <div id="shop-modal" class="event-modal hidden">
+        <div class="event-card shop-card">
+          <div class="shop-header">
+            <h3>Tài sản & Chỗ ở</h3>
+            <button id="btn-close-shop" class="btn-close-x" type="button">Đóng</button>
+          </div>
+          <div id="shop-content" class="shop-content"></div>
+        </div>
+      </div>
+      <!-- POPUP MỐI QUAN HỆ -->
+      <div id="rel-modal" class="event-modal hidden">
+        <div class="event-card shop-card">
+          <div class="shop-header">
+            <h3>Mối quan hệ</h3>
+            <button id="btn-close-rel" class="btn-close-x" type="button">Đóng</button>
+          </div>
+          <div id="rel-content" class="shop-content"></div>
+        </div>
+      </div>
+      <!-- POPUP MENU NHANH -->
+      <div id="menu-modal" class="event-modal hidden">
+        <div class="event-card shop-card">
+          <div class="shop-header">
+            <h3>Bảng điều khiển</h3>
+            <button id="btn-close-menu" class="btn-close-x" type="button">Đóng</button>
+          </div>
+          <div class="shop-content">
+            <div class="shop-item">
+              <div class="shop-item-info"><strong>Thông tin nhân vật</strong><small>Hồ sơ, bậc lương, trạng thái, cầm đồ & kinh doanh</small></div>
+              <button id="menu-go-profile" class="btn-buy" type="button">Mở</button>
+            </div>
+            <div class="shop-item">
+              <div class="shop-item-info"><strong>Đầu tư & Cột mốc</strong><small>Kinh doanh, tiết kiệm, vàng 9999, cổ phiếu & cột mốc</small></div>
+              <button id="menu-go-finance" class="btn-buy" type="button">Mở</button>
+            </div>
+            <div class="shop-item">
+              <div class="shop-item-info"><strong>Mối quan hệ</strong><small>Ba, Minh, Linh và các kèo tương tác</small></div>
+              <button id="menu-go-rel" class="btn-buy" type="button">Mở</button>
+            </div>
+            <div class="shop-item">
+              <div class="shop-item-info"><strong>Tài sản sở hữu</strong><small>Xem xe cộ, đồ dùng và phòng trọ đang có</small></div>
+              <button id="menu-go-shop" class="btn-buy" type="button">Mở</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- POPUP THÔNG TIN NHÂN VẬT -->
+      <div id="profile-modal" class="event-modal hidden">
+        <div class="event-card shop-card">
+          <div class="shop-header">
+            <h3>Thông tin nhân vật</h3>
+            <button id="btn-close-profile" class="btn-close-x" type="button">Đóng</button>
+          </div>
+          <div id="profile-content" class="shop-content"></div>
+        </div>
+      </div>
+      <!-- POPUP ĐẦU TƯ & CỘT MỐC -->
+      <div id="finance-modal" class="event-modal hidden">
+        <div class="event-card shop-card">
+          <div class="shop-header">
+            <h3>Đầu tư & Cột mốc</h3>
+            <button id="btn-close-finance" class="btn-close-x" type="button">Đóng</button>
+          </div>
+          <div id="finance-content" class="shop-content"></div>
+        </div>
+      </div>
+
+      <!-- POPUP MENU HOẠT ĐỘNG TẠI ĐỊA ĐIỂM -->
+      <div id="action-modal" class="event-modal hidden">
+        <div class="event-card shop-card">
+          <div class="shop-header">
+            <h3 id="action-title">Hoạt động</h3>
+            <button id="btn-close-action" class="btn-close-x" type="button">Đóng</button>
+          </div>
+          <p id="action-desc" style="margin-bottom: 10px;"></p>
+          <div id="action-list" class="shop-content"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
